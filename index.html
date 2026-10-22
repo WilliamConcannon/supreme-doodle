@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tatooine Tour — Multiresolution</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.7/build/pannellum.css">
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.7/build/pannellum.js"></script>
+<style>
+#panorama {
+    width: 100%;
+    height: auto;
+    max-width: 2000px;
+    aspect-ratio: 2 / 1;
+    margin: 0 auto;
+}
+@media (max-width: 1000px) {
+    #panorama { aspect-ratio: 1 / 1; }
+}
+</style>
+</head>
+<body>
+<div id="panorama"></div>
+<script>
+(function () {
+    // For Squarespace, replace this with the public HTTPS URL of your panoramas folder.
+    // No trailing slash. Keep landing, shipping, rack, and xWing beneath this folder.
+    const PANORAMA_BASE_URL = "./panoramas";
+    const config = {
+    "default": {
+        "firstScene": "landing",
+        "sceneFadeDuration": 1000
+    },
+    "scenes": {
+        "landing": {
+            "hfov": 110,
+            "type": "multires",
+            "hotSpots": [
+                {
+                    "pitch": -2.1,
+                    "yaw": 320,
+                    "type": "scene",
+                    "text": "Merch",
+                    "sceneId": "shipping"
+                },
+                {
+                    "pitch": -2.1,
+                    "yaw": 8,
+                    "type": "scene",
+                    "text": "rack",
+                    "sceneId": "rack"
+                },
+                {
+                    "pitch": -2.1,
+                    "yaw": 132.9,
+                    "type": "scene",
+                    "text": "X-Wing",
+                    "sceneId": "xWing"
+                }
+            ],
+            "multiRes": {
+                "path": "/%l/%s%y_%x",
+                "fallbackPath": "/fallback/%s",
+                "extension": "jpg",
+                "tileResolution": 512,
+                "maxLevel": 4,
+                "cubeResolution": 2600
+            }
+        },
+        "shipping": {
+            "hfov": 110,
+            "type": "multires",
+            "hotSpots": [
+                {
+                    "pitch": -2.1,
+                    "yaw": 180,
+                    "type": "scene",
+                    "text": "landing",
+                    "sceneId": "landing"
+                },
+                {
+                    "pitch": -2.1,
+                    "yaw": 90,
+                    "type": "scene",
+                    "text": "rack",
+                    "sceneId": "rack"
+                }
+            ],
+            "multiRes": {
+                "path": "/%l/%s%y_%x",
+                "fallbackPath": "/fallback/%s",
+                "extension": "jpg",
+                "tileResolution": 512,
+                "maxLevel": 4,
+                "cubeResolution": 2600
+            }
+        },
+        "rack": {
+            "hfov": 110,
+            "type": "multires",
+            "hotSpots": [
+                {
+                    "pitch": -2.1,
+                    "yaw": 180,
+                    "type": "scene",
+                    "text": "landing",
+                    "sceneId": "landing"
+                },
+                {
+                    "pitch": -2.1,
+                    "yaw": 280,
+                    "type": "scene",
+                    "text": "Merch",
+                    "sceneId": "shipping"
+                }
+            ],
+            "multiRes": {
+                "path": "/%l/%s%y_%x",
+                "fallbackPath": "/fallback/%s",
+                "extension": "jpg",
+                "tileResolution": 512,
+                "maxLevel": 4,
+                "cubeResolution": 2600
+            }
+        },
+        "xWing": {
+            "hfov": 110,
+            "type": "multires",
+            "hotSpots": [
+                {
+                    "pitch": -15,
+                    "yaw": 0,
+                    "type": "scene",
+                    "text": "landing",
+                    "sceneId": "landing"
+                }
+            ],
+            "multiRes": {
+                "path": "/%l/%s%y_%x",
+                "fallbackPath": "/fallback/%s",
+                "extension": "jpg",
+                "tileResolution": 512,
+                "maxLevel": 4,
+                "cubeResolution": 2600
+            }
+        }
+    }
+};
+    const base = PANORAMA_BASE_URL.replace(/\/$/, '');
+    Object.entries(config.scenes).forEach(function ([id, scene]) {
+        scene.multiRes.basePath = base + '/' + id;
+        scene.preview = base + '/' + id + '/preview.jpg';
+    });
+    const viewer = pannellum.viewer('panorama', config);
+    if (window.ResizeObserver) {
+        new ResizeObserver(function () { viewer.resize(); }).observe(document.getElementById('panorama'));
+    }
+})();
+</script>
+</body>
+</html>
